@@ -137,11 +137,11 @@ extension BaseAdapter {
 
     func send(to address: String, amount: Decimal, sortType: TransactionDataSortType, pluginData: [UInt8: IPluginData] = [:]) throws {
         let satoshiAmount = convertToSatoshi(value: amount)
-        _ = try abstractKit.send(to: address, value: satoshiAmount, feeRate: feeRate, sortType: sortType, pluginData: pluginData)
+        _ = try abstractKit.send(from: nil, to: address, value: satoshiAmount, feeRate: feeRate, sortType: sortType, pluginData: pluginData)
     }
 
     func availableBalance(for address: String?, pluginData: [UInt8: IPluginData] = [:]) -> Decimal {
-        let amount = (try? abstractKit.maxSpendableValue(toAddress: address, feeRate: feeRate, pluginData: pluginData)) ?? 0
+        let amount = (try? abstractKit.maxSpendableValue(from: nil, toAddress: address, feeRate: feeRate, pluginData: pluginData)) ?? 0
         return Decimal(amount) / coinRate
     }
 
@@ -160,7 +160,7 @@ extension BaseAdapter {
     func fee(for value: Decimal, address: String?, pluginData: [UInt8: IPluginData] = [:]) -> Decimal {
         do {
             let amount = convertToSatoshi(value: value)
-            let fee = try abstractKit.fee(for: amount, toAddress: address, feeRate: feeRate, pluginData: pluginData)
+            let fee = try abstractKit.fee(from: nil, for: amount, toAddress: address, feeRate: feeRate, pluginData: pluginData)
             return Decimal(fee) / coinRate
         } catch {
             return 0
